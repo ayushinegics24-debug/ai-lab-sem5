@@ -1,0 +1,45 @@
+# Iterative Deepening Search
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F', 'G'],
+    'D': [],
+    'E': [],
+    'F': [],
+    'G': []
+}
+
+def DLS(node, goal, depth):
+    print(node, end=" ")
+
+    if node == goal:
+        return True
+
+    if depth <= 0:
+        return False
+
+    for child in graph[node]:
+        if DLS(child, goal, depth - 1):
+            return True
+
+    return False
+
+
+def IDS(start, goal, max_depth):
+    for depth in range(max_depth + 1):
+        print("\nDepth Limit:", depth)
+        if DLS(start, goal, depth):
+            print("\nGoal Found!")
+            return True
+
+    print("\nGoal Not Found!")
+    return False
+
+
+# Main program
+start = input("Enter starting node: ").upper()
+goal = input("Enter goal node: ").upper()
+max_depth = int(input("Enter maximum depth: "))
+
+IDS(start, goal, max_depth)
