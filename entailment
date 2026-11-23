@@ -1,0 +1,49 @@
+from itertools import product
+
+def parse_clause(s):
+    return [x.strip() for x in s.split('|')]
+
+def evaluate_literal(lit, values):
+    if lit.startswith('!') or lit.startswith('~'):
+        return not values[lit[1:].strip()]
+    return values[lit]
+
+def evaluate_clause(clause, values):
+    return any(evaluate_literal(x, values) for x in clause)
+
+def entails(kb, query):
+    symbols = set()
+
+    for clause in kb:
+        for lit in clause:
+            symbols.add(lit.lstrip('!~').strip())
+
+    symbols.add(query.lstrip('!~').strip())
+    symbols = sorted(symbols)
+
+    for combination in product([False, True], repeat=len(symbols)):
+        values = dict(zip(symbols, combination))
+
+        if all(evaluate_clause(c, values) for c in kb):
+            if not evaluate_literal(query, values):
+                return False
+
+    return True
+
+kb = []
+
+n = int(input("Enter number of clauses: "))
+
+for i in range(n):
+    s = input("Enter clause " + str(i+1) + ": ")
+    kb.append(parse_clause(s))
+
+query = input("Enter query: ").strip()
+
+print("\nKnowledge Base:", kb)
+print("Query:", query)
+
+if entails(kb, query):
+    print("Query is Entailed")
+else:
+    print("Query is Not Entailed")
